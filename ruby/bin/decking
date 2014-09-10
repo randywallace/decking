@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'decking'
+
+puts 'this is a test'

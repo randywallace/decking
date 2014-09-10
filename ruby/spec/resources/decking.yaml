@@ -1,0 +1,85 @@
+# http://decking.io/#installation
+#
+# Won't work without https://github.com/makeusabrew/decking/pull/50
+#
+###
+#
+#TODO: support merging ENV!! https://registry.hub.docker.com/u/jwilder/nginx-proxy/
+## VIRTUAL_ENV app.qa.emailanalyst.com f.e.
+---
+
+images:
+  base:      base
+  config:    config
+  repos:     repos
+  webapp:    webapp
+  elasticsearch: elasticsearch
+  blank:
+
+containers:
+  blank_container_image:
+  repos:
+    image: repos
+    dependencies:
+      - elasticsearch:es
+      - config
+  config:
+    image: config
+  elasticsearch:
+    image: elasticsearch
+    port:
+      - 9200:9200
+    mount-from:
+      - repos
+  webapp-main:
+    image: webapp
+    mount-from:
+      - repos
+      - config
+    port:
+      - 80:80
+    extra: webapp-main
+  webapp-admin:
+    image: webapp
+    mount-from:
+      - repos
+      - config
+    port:
+      - 81:80
+    extra: webapp-admin
+
+clusters:
+  qa:
+    - repos
+    - config
+    - webapp-main
+    - webapp-admin 
+  qa-mod:
+    - repos
+    - config
+    - elasticsearch
+    - webapp-admin
+
+groups:
+  qa:
+    options:
+      env:
+        ENVIRONMENT: qa
+        TAG: v1.0.0
+        AWS_ACCESS_KEY: key
+        AWS_SECRET_ACCESS_KEY: secret
+        GITHUB_ACCOUNT: randywallace
+        GITHUB_REPO: decking
+        GITHUB_BRANCH: master
+        GITHUB_TOKEN: token
+  qa-mod:
+    options:
+      env:
+        ENVIRONMENT: qa-admin
+        TAG: v1.0.0
+    containers:
+      webapp-admin:
+        port:
+          - 82:80
+        dependencies:
+          - "elasticsearch:elasticsearch"
