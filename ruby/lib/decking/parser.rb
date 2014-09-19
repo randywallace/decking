@@ -3,30 +3,41 @@ require 'yaml'
 require 'awesome_print'
 
 module Decking
-  class Parser
+  module Parser
+    # Singleton Method: https://practicingruby.com/articles/ruby-and-the-singleton-pattern-dont-get-along
+    extend self
 
-    attr_accessor :config, :cluster
+    attr_accessor :config
 
-    def initialize options = {}
-      options[:decking_file] ||= 'decking.yaml'
+    def config_file config_file
+      config_file ||= 'decking.yaml'
 
-      @config = Hashie::Mash.new(YAML.load_file(options[:decking_file]))
+      @config = Hashie::Mash.new(YAML.load_file(config_file))
 
       confirm_requirements
 
     end
 
-    def confirm_requirements
-      raise "No Containers Defined" unless config.containers?
-      raise "No Clusters Defined"   unless config.clusters?
+    def print
+      ap config
     end
 
-    def parse
+    def parse cluster
       parse_images
       parse_containers
       parse_clusters
       parse_groups
+      merge_cluster_config cluster
     end
+
+    private
+
+    def confirm_requirements
+      raise "No Containers Defined" unless config.containers?
+      raise "No Clusters Defined"   unless config.clusters?
+      raise "No Images Defined"     unless config.images?
+    end
+
 
     def parse_images
       config.images.each do |key, val|
@@ -36,16 +47,21 @@ module Decking
 
     def parse_containers
       config.containers.each do |key, val|
-        config.containers[key]                     ||= Hashie::Mash.new
-        config.containers[key].dependencies        ||= Array.new
-        config.containers[key]["mount-from"]       ||= Array.new
-        config.containers[key].image               ||= key
-        config.containers[key].aliases             ||= Array.new
-        config.containers[key].dependencies.each_with_index do |v, idx|
-          config.containers[key].dependencies[idx] = resolve_dependency v unless v.instance_of? Hash
+        config.containers[key]              ||= Hashie::Mash.new
+        config.containers[key].links        ||= Array.new
+        config.containers[key].volumes_from ||= Array.new
+        config.containers[key].image        ||= key
+        config.containers[key].port         ||= Array.new
+        config.containers[key].aliases      ||= Array.new
+        config.containers[key].data         ||= false
+        config.containers[key].hostname     ||= key
+        config.containers[key].links.each_with_index do |v, idx|
+          config.containers[key].links[idx] = resolve_dependency v unless v.instance_of? Hash
         end
-        config.containers[key]["mount-from"].each_with_index do |v, idx|
-          raise "'mount-from' dependency '" + v + "' of container '" + key + "' does not exist" unless config.containers.key? v
+        config.containers[key].volumes_from.each_with_index do |v, idx|
+          unless config.containers.key? v
+          raise "'volumes_from' dependency '" + v + "' of container '" + key + "' does not exist" 
+          end
         end
       end
     end
@@ -71,12 +87,13 @@ module Decking
 
     def parse_groups
       config.groups.each do |key, val|
-        config.groups[key].options = Hashie::Mash.new unless config.groups[key].key? 'options'
+        config.groups[key]            = Hashie::Mash.new if config.groups[key].nil?
+        config.groups[key].options    = Hashie::Mash.new unless config.groups[key].key? 'options'
         config.groups[key].containers = Hashie::Mash.new unless config.groups[key].key? 'containers'
         config.groups[key].containers.each do |c_key, c_val|
-          if config.groups[key].containers[c_key].key? 'dependencies'
-            config.groups[key].containers[c_key].dependencies.each_with_index do |v, idx|
-              config.groups[key].containers[c_key].dependencies[idx] = resolve_dependency v
+          if config.groups[key].containers[c_key].key? 'links'
+            config.groups[key].containers[c_key].links.each_with_index do |v, idx|
+              config.groups[key].containers[c_key].links[idx] = resolve_dependency v
             end
           end
         end
@@ -85,14 +102,33 @@ module Decking
 
     def merge_cluster_config cluster
       raise "Cluster '" + cluster + "' doesn't exist" unless config.clusters.key? cluster
-      cluster = Hashie::Mash.new(config.clusters[cluster])
-     # cluster = OpenStruct.new @config["clusters"][cluster]
-     # ap cluster.marshal_dump
+      c = Hashie::Mash.new
+      c.containers = Hash.new
+      
+      # Merge primary container configs
+      config.clusters[cluster].containers.each_with_index do |key, idx|
+        c.containers[key] = config.containers[key]
+      end
 
-    end
-
-    def print_parsed_config
-      ap config
+      c.containers.each do |k, v|
+        # Merge Global Overrides
+        c.containers[k] = c.containers[k].deep_merge(config.global) if config.key? 'global'
+        # Merge Group Overrides
+        c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].options)
+        # Merge Group Container Overrides
+        if config.groups[config.clusters[cluster].group].containers.key? k
+          c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].containers[k])
+        end
+        c.containers[k].name = k + '.' + cluster
+        c.containers[k].domainname = cluster + '.' + config.global.domainname if config.global.key? 'domainname'
+      end
+      images = self.config.images
+      group  = self.config.clusters[cluster].group
+      self.config = c
+      self.config.images = images
+      self.config.cluster = cluster
+      self.config.group = group
+      self.config
     end
 
     def resolve_dependency dep

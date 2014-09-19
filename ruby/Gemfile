@@ -1,4 +1,7 @@
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in decking.gemspec
+#
+gem 'docker-api', :git => 'https://github.com/randywallace/docker-api.git'
+
 gemspec
