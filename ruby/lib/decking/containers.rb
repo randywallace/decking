@@ -49,7 +49,7 @@ end
 # TODO: Delete below; just screwing around with the container setup during prototyping
 if __FILE__==$0 
   require 'decking'
-  Decking::Parser.config_file '/Users/randy/git/decking/ruby/spec/resources/decking.yaml'
+  Decking::Parser.config_file '/Users/randy/git/decking/ruby/spec/resources/decking-container-tests.yaml'
   Decking::Parser.parse 'container-tests'
   Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
   container_name="ubuntu.container-tests"
@@ -63,6 +63,7 @@ if __FILE__==$0
   #ap Decking::Container[container_name].image.inspect #=> webapp
   #ap Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
   #puts Docker.url
+  ap Decking::Container[container_name].config
   Decking::Container[container_name].delete!
   Decking::Container[container_name].create
   Decking::Container[container_name].start

@@ -1,0 +1,50 @@
+# vim: set foldmethod=indent
+---
+
+images:
+  ubuntu:
+
+containers:
+  ubuntu:
+    port:
+      - 82:80
+    command: ['/bin/sh', '-c', 'while true; do echo Hello world; sleep 1; done']
+    entrypoint: ''
+    memory: 0
+    memory_swap: 0
+    cpu_shares: 0
+    cpu_set: ''
+    attach_stdout: false
+    attach_stderr: false
+    attach_stdin: false
+    tty: false
+    open_stdin: false
+    stdin_once: false
+
+clusters:
+  container-tests:
+    - ubuntu
+
+groups:
+  container-tests:
+    options:
+      env:
+        OPTIONS_ENV: false
+        OPTIONS_ENV_OVERRIDE: 'this will not be the value'
+        GLOBAL_OVERRIDE_AWS_REGION: 'us-east-1'
+    containers:
+      ubuntu:
+        port:
+          - 83:81
+          - 82:80
+        env:
+          CONTAINERS_OPTS_ENV: false
+          OPTIONS_ENV_OVERRIDE: 'this is the real value'
+
+
+global:
+  env:
+    AWS_ACCESS_KEY: key
+    AWS_SECRET_ACCESS_KEY: secret
+    GLOBAL_OVERRIDE_AWS_REGION: 'us-midwest-7'
+  domainname: qa.randywallace.com
