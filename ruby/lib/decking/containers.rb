@@ -8,6 +8,17 @@ module Decking
     class << self
       include Enumerable
 
+      def delete_all ; map{|name, container| container.delete  }; end
+      def delete_all!; map{|name, container| container.delete! }; end
+
+      def create_all ; map{|name, container| container.create  }; end
+      def create_all!; map{|name, container| container.create! }; end
+
+      def start_all  ; map{|name, container| container.start   }; end
+
+      def stop_all   ; map{|name, container| container.stop    }; end
+      def stop_all!  ; map{|name, container| container.stop!   }; end
+
       def containers
         @containers ||= Hash.new
       end
@@ -41,7 +52,7 @@ module Decking
       if config.key? method
         config[method]
       else
-        super method, *args, &block
+        super
       end
     end
   end
@@ -64,11 +75,14 @@ if __FILE__==$0
   #ap Decking::Container[container_name].image.inspect #=> webapp
   #ap Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
   #puts Docker.url
-#  ap Decking::Container[container_name].config
-  Decking::Container[container_name].delete!
-  Decking::Container[container_name].create
-  Decking::Container[container_name].start
+  #ap Decking::Container[container_name].config
+  Decking::Container.delete_all
+  #Decking::Container.delete_all!
+  Decking::Container.create_all
+  #Decking::Container.create_all!
+  Decking::Container.start_all
   sleep 1
-  puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
-  Decking::Container[container_name].stop
+  #puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
+  Decking::Container.stop_all
+  #Decking::Container.stop_all!
 end

@@ -5,14 +5,27 @@ images:
   ubuntu:
 
 containers:
-  ubuntu:
+  ubuntu-hello-world:
+    image: ubuntu
     port:
       - 82:80
     command: /bin/sh -c "while true; do echo Hello world; sleep 1; done"
+  ubuntu-hello-frank:
+    image: ubuntu
+    port:
+      - 83:80
+    command: /bin/sh -c "while true; do echo Hello frank; sleep 1; done"
+  ubuntu-hello-josh:
+    image: ubuntu
+    port:
+      - 84:80
+    command: /bin/sh -c "while true; do echo Hello josh; sleep 1; done"
 
 clusters:
   container-tests:
-    - ubuntu
+    - ubuntu-hello-world
+    - ubuntu-hello-frank
+    - ubuntu-hello-josh
 
 groups:
   container-tests:
