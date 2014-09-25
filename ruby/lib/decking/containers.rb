@@ -10,28 +10,18 @@ module Decking
     class << self
       include Enumerable
 
-      def delete_all ; map{|name, container| container.delete  }; end
-      def delete_all!; map{|name, container| container.delete! }; end
+      def delete_all ; map{|n, c| c.delete  }; end
+      def delete_all!; map{|n, c| c.delete! }; end
 
-      def create_all ; map{|name, container| container.create  }; end
-      def create_all!; map{|name, container| container.create! }; end
+      def create_all ; map{|n, c| c.create  }; end
+      def create_all!; map{|n, c| c.create! }; end
 
-      def start_all  ; map{|name, container| container.start   }; end
+      def start_all  ; map{|n, c| c.start   }; end
 
-      def stop_all   ; map{|name, container| container.stop    }; end
-      def stop_all!  ; map{|name, container| container.stop!   }; end
+      def stop_all   ; map{|n, c| c.stop    }; end
+      def stop_all!  ; map{|n, c| c.stop!   }; end
 
-      def attach_all
-        threads = Array.new
-        map do |name, container|
-          threads << Thread.new do
-            container.attach
-          end
-        end
-        threads.map { |thread| thread.join }
-      rescue Interrupt, SystemExit
-        threads.map { |thread| thread.kill }
-      end
+      def attach_all ; Decking.run_with_threads_multiplexed :attach, instances; end
 
       def containers
         @containers ||= Hash.new
@@ -90,12 +80,11 @@ if __FILE__==$0
   #ap Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
   #puts Docker.url
   #ap Decking::Container[container_name].config
-  Decking::Container.delete_all
-  #Decking::Container.delete_all!
+  #Decking::Container.delete_all
+  Decking::Container.delete_all!
   Decking::Container.create_all
   #Decking::Container.create_all!
   Decking::Container.start_all
-  sleep 1
   #puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
   Decking::Container.attach_all
   Decking::Container.stop_all

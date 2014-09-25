@@ -7,15 +7,16 @@ module Decking
   CONSOLE_LENGTH=80
 
   def run_with_progress(title, &block)
-    command  = Thread.new(&block)
+    command  = Thread.new(&block).tap{ |t| t.abort_on_exception = true}
 
     progress = Thread.new do
-      progressbar = ProgressBar.create title: title, 
-                                       total: nil, 
-                                       length: Decking::CONSOLE_LENGTH, 
-                                       format: '%t%B', 
-                                       progress_mark: ' ', 
-                                       unknown_progress_animation_steps: ['..  .', '...  ', ' ... ', '  ...', '.  ..']
+      opts = { title: title, 
+               total: nil, 
+               length: Decking::CONSOLE_LENGTH, 
+               format: '%t%B', 
+               progress_mark: ' ', 
+               unknown_progress_animation_steps: ['..  .', '...  ', ' ... ', '  ...', '.  ..'] }
+      progressbar = ProgressBar.create opts
 
       begin
         loop do
@@ -23,21 +24,53 @@ module Decking
           sleep 0.5
         end
       rescue RuntimeError => e
-        if e.message == 'Shutdown'
+        unless e.message == 'Shutdown'
+          raise RuntimeError e
+        else
           progressbar.total = 100
           progressbar.format '%t ' + "\u2713".green
           progressbar.finish
         end
-      rescue Exception => e
-        puts e.class
-        puts e.message
-        puts e.backtrace.inspect
       end
-    end
+    end.tap {|t| t.abort_on_exception = true }
 
     command.join
     progress.raise 'Shutdown'
     progress.join
+  rescue Interrupt 
+    clear_progressline
+    puts "I know you did't mean to do that... try again if you really do".yellow
+  rescue Exception => e
+    clear_progressline
+    puts e.class
+    puts e.message
+    puts e.backtrace.inspect
+    exit
+  ensure
+    begin
+      command.join
+      progress.raise 'Shutdown'
+      progress.join
+    rescue Interrupt
+      puts "Caught second interrupt, exiting...".red
+      exit
+    rescue SystemExit
+      puts "Caught SystemExit. Exiting...".red
+      exit
+    end
+  end
+
+  def run_with_threads_multiplexed method, containers
+    clear_progressline
+    threads = Array.new 
+    containers.map do |name, container|
+      threads << Thread.new do
+        container.method(method).call
+      end
+    end
+    threads.map { |thread| thread.join }
+  rescue Interrupt
+    threads.map { |thread| thread.kill }
   end
 
   def clear_progressline

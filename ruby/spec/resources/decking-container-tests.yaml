@@ -12,20 +12,20 @@ containers:
     command: /bin/sh -c "while true; do echo Hello world; sleep 1; done"
   ubuntu-hello-frank:
     image: ubuntu
-    port:
-      - 83:80
     command: /bin/sh -c "while true; do echo Hello frank; sleep 1; done"
   ubuntu-hello-josh:
     image: ubuntu
-    port:
-      - 84:80
     command: /bin/sh -c "while true; do echo Hello josh; sleep 1; done"
+  ubuntu-hello-stderr:
+    image: ubuntu
+    command: /bin/sh -c "while true; do echo error will robinson >&2; sleep 2; done"
 
 clusters:
   container-tests:
     - ubuntu-hello-world
     - ubuntu-hello-frank
     - ubuntu-hello-josh
+    - ubuntu-hello-stderr
 
 groups:
   container-tests:

@@ -1,17 +1,21 @@
 module Decking
   class Container
     def attach
+      $stdout.puts "Attaching to #{name}... unattach with ^C".yellow
+      $stdout.flush
       begin
-        Decking.clear_progressline
         Docker::Container.get(name).attach do |stream, chunk|
-          $stdout.puts "(#{name}) #{stream}: #{chunk}"
+          case stream
+          when :stdout
+            $stdout.puts "(#{name}) #{stream}: #{chunk}"
+          when :stderr
+            $stdout.puts "(#{name}) #{stream}: #{chunk}"
+          end
           $stdout.flush
         end
       rescue Docker::Error::NotFoundError
-        Decking.clear_progressline
         puts "Container #{name} does not exist, nothing to attach to".yellow
       rescue Docker::Error::ServerError => e
-        Decking.clear_progressline
         puts e.message.red
       end
     end
