@@ -1,3 +1,4 @@
+require 'thread'
 require 'decking/container/create'
 require 'decking/container/start'
 require 'decking/container/delete'
@@ -18,6 +19,17 @@ module Decking
 
       def stop_all   ; map{|name, container| container.stop    }; end
       def stop_all!  ; map{|name, container| container.stop!   }; end
+
+      def attach_all
+        threads = Array.new
+        map do |name, container|
+          threads << Thread.new do
+            container.attach
+          end
+        end
+        gets
+        threads.map { |thread| thread.kill }
+      end
 
       def containers
         @containers ||= Hash.new
@@ -82,6 +94,7 @@ if __FILE__==$0
   #Decking::Container.create_all!
   Decking::Container.start_all
   sleep 1
+  Decking::Container.attach_all
   #puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
   Decking::Container.stop_all
   #Decking::Container.stop_all!
