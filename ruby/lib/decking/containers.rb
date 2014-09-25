@@ -38,9 +38,9 @@ module Decking
     end
 
     def method_missing method, *args, &block
-      begin
+      if config.key? method
         config[method]
-      rescue
+      else
         super method, *args, &block
       end
     end
@@ -68,8 +68,7 @@ if __FILE__==$0
   Decking::Container[container_name].delete!
   Decking::Container[container_name].create
   Decking::Container[container_name].start
-  sleep 2
+  sleep 1
   puts Docker::Container.get(container_name).logs 'stdout'=>true, 'stderr'=>true
   Decking::Container[container_name].stop
-  STDOUT.flush
 end

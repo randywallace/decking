@@ -47,14 +47,29 @@ module Decking
 
     def parse_containers
       config.containers.each do |key, val|
-        config.containers[key]              ||= Hashie::Mash.new
-        config.containers[key].links        ||= Array.new
-        config.containers[key].volumes_from ||= Array.new
-        config.containers[key].image        ||= key
-        config.containers[key].port         ||= Array.new
-        config.containers[key].aliases      ||= Array.new
-        config.containers[key].data         ||= false
-        config.containers[key].hostname     ||= key
+        config.containers[key]               ||= Hashie::Mash.new
+        config.containers[key].links         ||= Array.new
+        config.containers[key].binds         ||= Array.new
+        config.containers[key].lxc_conf      ||= Array.new
+        config.containers[key].domainname    ||= ""
+        config.containers[key].command       ||= ""
+        config.containers[key].entrypoint    ||= nil
+        config.containers[key].memory        ||= 0
+        config.containers[key].memory_swap   ||= 0
+        config.containers[key].cpu_shares    ||= 0
+        config.containers[key].cpu_set       ||= ""
+        config.containers[key].attach_stdout ||= false
+        config.containers[key].attach_stderr ||= false
+        config.containers[key].attach_stdin  ||= false
+        config.containers[key].tty           ||= false
+        config.containers[key].open_stdin    ||= false
+        config.containers[key].stdin_once    ||= false
+        config.containers[key].volumes_from  ||= Array.new
+        config.containers[key].image         ||= key
+        config.containers[key].port          ||= Array.new
+        config.containers[key].aliases       ||= Array.new
+        config.containers[key].data          ||= false
+        config.containers[key].hostname      ||= key
         config.containers[key].links.each_with_index do |v, idx|
           config.containers[key].links[idx] = resolve_dependency v unless v.instance_of? Hash
         end

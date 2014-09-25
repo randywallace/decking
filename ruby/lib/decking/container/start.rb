@@ -15,9 +15,9 @@ module Decking
               port_bindings[vars[0]]  = [ { 'HostPort' => vars[0] } ]
             end
           end
-          @container.start! 'Binds'        => binds      || [],
-                            'Links'        => links      || [],
-                            'LxcConf'      => lxc_conf   || [],
+          @container.start! 'Links'        => links,
+                            'Binds'        => binds, 
+                            'LxcConf'      => lxc_conf,
                             'PortBindings' => port_bindings
         rescue Docker::Error::ServerError => e
           puts e.message
