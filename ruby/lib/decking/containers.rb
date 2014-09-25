@@ -69,6 +69,6 @@ if __FILE__==$0
   Decking::Container[container_name].create
   Decking::Container[container_name].start
   sleep 1
-  puts Docker::Container.get(container_name).logs 'stdout'=>true, 'stderr'=>true
+  puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
   Decking::Container[container_name].stop
 end

@@ -42,6 +42,7 @@ module Decking
 
   def clear_progressline
     $stdout.print " " * CONSOLE_LENGTH + "\r"
+    #$stdout.print "\n"
   end
 
 end

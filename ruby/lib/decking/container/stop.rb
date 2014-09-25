@@ -8,6 +8,11 @@ module Decking
         rescue Docker::Error::NotFoundError
           Decking.clear_progressline
           puts "Container #{name} does not exist, nothing to stop".yellow
+        rescue Docker::Error::ServerError => e
+          Docker.clear_progressline
+          puts "Container #{name} encountered a ServerError".red
+          puts e.message.red
+          exit
         end
       end
     end
