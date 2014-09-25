@@ -28,8 +28,9 @@ module Decking
             container.attach
           end
         end
-##        gets
         threads.map { |thread| thread.join }
+      rescue Interrupt, SystemExit
+        threads.map { |thread| thread.kill }
       end
 
       def containers
