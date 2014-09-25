@@ -1,6 +1,7 @@
 require 'decking/container/create'
 require 'decking/container/start'
 require 'decking/container/delete'
+require 'decking/container/stop'
 
 module Decking
   class Container
@@ -63,9 +64,12 @@ if __FILE__==$0
   #ap Decking::Container[container_name].image.inspect #=> webapp
   #ap Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
   #puts Docker.url
-  ap Decking::Container[container_name].config
+#  ap Decking::Container[container_name].config
   Decking::Container[container_name].delete!
   Decking::Container[container_name].create
   Decking::Container[container_name].start
+  sleep 2
   puts Docker::Container.get(container_name).logs 'stdout'=>true, 'stderr'=>true
+  Decking::Container[container_name].stop
+  STDOUT.flush
 end

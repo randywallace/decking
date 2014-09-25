@@ -2,14 +2,13 @@
 module Decking
   class Container
     def delete force = false
-      puts "Deleting #{name}..."
-      begin
-        Docker::Container.get(name).remove('force' => force)
-      rescue Docker::Error::NotFoundError => e
-        puts "Container #{name} does not exist, nothing to delete"
-      rescue Exception => e
-        puts e.message
-        puts e.backtrace.inspect
+      Decking.run_with_progress("#{'Forcefully ' if force}Deleting #{name}") do
+        begin
+            Docker::Container.get(name).remove('force' => force)
+        rescue Docker::Error::NotFoundError
+          Decking.clear_progressline
+          puts "Container #{name} does not exist, nothing to delete".yellow
+        end
       end
     end
 
