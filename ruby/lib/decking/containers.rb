@@ -1,4 +1,5 @@
 require 'thread'
+require 'decking/helpers'
 require 'decking/container/create'
 require 'decking/container/start'
 require 'decking/container/delete'
@@ -7,7 +8,9 @@ require 'decking/container/attach'
 
 module Decking
   class Container
+    include Decking::Helpers
     class << self
+      include Decking::Helpers
       include Enumerable
 
       def delete_all ; map{|n, c| c.delete  }; end
@@ -21,7 +24,7 @@ module Decking
       def stop_all   ; map{|n, c| c.stop    }; end
       def stop_all!  ; map{|n, c| c.stop!   }; end
 
-      def attach_all ; Decking.run_with_threads_multiplexed :attach, instances; end
+      def attach_all ; run_with_threads_multiplexed :attach, instances; end
 
       def containers
         @containers ||= Hash.new

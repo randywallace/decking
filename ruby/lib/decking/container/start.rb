@@ -1,7 +1,7 @@
 module Decking
   class Container
     def start
-      Decking.run_with_progress("Starting #{name}") do
+      run_with_progress("Starting #{name}") do
         begin
           port_bindings = Hash.new
           port.each do |val|
@@ -20,16 +20,16 @@ module Decking
                             'LxcConf'      => lxc_conf,
                             'PortBindings' => port_bindings
         rescue Docker::Error::NotFoundError
-          Decking.clear_progressline
+          clear_progressline
           puts "Container #{name} not found".red
           exit
         rescue Docker::Error::ServerError => e
-          Decking.clear_progressline
+          clear_progressline
           puts "Container #{name} encountered a ServerError".red
           puts e.message.red
           exit
         rescue Exception => e
-          Decking.clear_progressline
+          clear_progressline
           puts "Unhandled Exception #{e.message}"
           e.backtrace.map{|msg| puts "  #{msg}"}
           exit

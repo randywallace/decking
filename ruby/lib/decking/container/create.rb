@@ -1,7 +1,7 @@
 module Decking
   class Container
     def create force = false
-      Decking.run_with_progress("#{"Forcefully " if force}Creating #{name}") do
+      run_with_progress("#{"Forcefully " if force}Creating #{name}") do
         begin
           exposed_ports = Hash.new
           port.each do |val|
@@ -31,7 +31,7 @@ module Decking
                                                 'Env'          => env.map { |k, v| "#{k}=#{v}" },
                                                 'ExposedPorts' => exposed_ports
         rescue Excon::Errors::Conflict
-          Decking.clear_progressline
+          clear_progressline
           puts "Container #{name} already exists".yellow
           if force
             delete!
@@ -40,16 +40,16 @@ module Decking
             exit
           end
         rescue Docker::Error::NotFoundError
-          Decking.clear_progressline
+          clear_progressline
           puts "Container #{name} not found".yellow
           exit
         rescue Docker::Error::ServerError => e
-          Decking.clear_progressline
+          clear_progressline
           puts "Container #{name} encountered a ServerError".red
           puts e.message.red
           exit
         rescue Exception => e
-          Decking.clear_progressline
+          clear_progressline
           puts "Unhandled Exception #{e.message}"
           e.backtrace.map{|msg| puts "  #{msg}"}
           exit

@@ -1,15 +1,16 @@
 
 module Decking
   class Container
+
     def stop time_to_kill = 30
-      Decking.run_with_progress("Stopping #{name}") do
+      run_with_progress("Stopping #{name}") do
         begin
           Docker::Container.get(name).stop('t' => time_to_kill)
         rescue Docker::Error::NotFoundError
-          Decking.clear_progressline
+          clear_progressline
           puts "Container #{name} does not exist, nothing to stop".yellow
         rescue Docker::Error::ServerError => e
-          Docker.clear_progressline
+          clear_progressline
           puts "Container #{name} encountered a ServerError".red
           puts e.message.red
           exit
