@@ -4,7 +4,8 @@ module Decking
       begin
         Decking.clear_progressline
         Docker::Container.get(name).attach do |stream, chunk|
-          puts "#{stream}: #{chunk}"
+          $stdout.puts "#{stream}: #{chunk}"
+          $stdout.flush
         end
       rescue Docker::Error::NotFoundError
         Decking.clear_progressline
