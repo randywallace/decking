@@ -1,6 +1,5 @@
 require 'hashie'
 require 'yaml'
-require 'awesome_print'
 require 'docker'
 
 require "decking/version"

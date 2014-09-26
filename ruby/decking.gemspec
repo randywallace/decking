@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "hashie"
-  spec.add_dependency "awesome_print"
   spec.add_dependency "ruby-progressbar"
   spec.add_dependency "docker-api"
 

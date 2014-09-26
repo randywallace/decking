@@ -71,18 +71,18 @@ if __FILE__==$0
   Decking::Parser.config_file '/Users/randy/git/decking/ruby/spec/resources/decking-container-tests.yaml'
   Decking::Parser.parse 'container-tests'
   Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
-  container_name="ubuntu-hello-world.container-tests"
+  #container_name="ubuntu-hello-world.container-tests"
   #Decking::Container.map { |name, inst| puts name + ': ' + inst.config.image + ', ' + inst.config.name}
-  #ap Decking::Container.count #=> 5
-  #ap Decking::Container.all? { |name, inst| inst.config.data == true } #=> true if any of the containers have the data=true
-  #ap Decking::Container.group_by{ |name, inst| inst.config.data } #=> Container instances grouped by whether or not data is true or false
-  #ap Decking::Container.find_all{ |name, inst| inst.config.data == true } #=> Container instances that have data=true
-  #ap Decking::Container[container_name].config.image #=> webapp
-  #ap Decking::Container[container_name].volumes_from.inspect #=> ["repo", "config"]
-  #ap Decking::Container[container_name].image.inspect #=> webapp
-  #ap Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
+  #puts Decking::Container.count #=> 5
+  #puts Decking::Container.all? { |name, inst| inst.config.data == true } #=> true if any of the containers have the data=true
+  #puts Decking::Container.group_by{ |name, inst| inst.config.data } #=> Container instances grouped by whether or not data is true or false
+  #puts Decking::Container.find_all{ |name, inst| inst.config.data == true } #=> Container instances that have data=true
+  #puts Decking::Container[container_name].config.image #=> webapp
+  #puts Decking::Container[container_name].volumes_from.inspect #=> ["repo", "config"]
+  #puts Decking::Container[container_name].image.inspect #=> webapp
+  #puts Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
   #puts Docker.url
-  #ap Decking::Container[container_name].config
+  #puts Decking::Container[container_name].config
   #Decking::Container.delete_all
   Decking::Container.delete_all!
   Decking::Container.create_all

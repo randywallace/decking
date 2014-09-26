@@ -1,6 +1,5 @@
 require 'hashie'
 require 'yaml'
-require 'awesome_print'
 
 module Decking
   module Parser
@@ -19,7 +18,7 @@ module Decking
     end
 
     def print
-      ap config
+      puts config
     end
 
     def parse cluster
