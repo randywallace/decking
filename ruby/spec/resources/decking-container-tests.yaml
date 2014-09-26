@@ -9,16 +9,16 @@ containers:
     image: ubuntu
     port:
       - 82:80
-    command: /bin/sh -c "while true; do echo Hello world; sleep 1; done"
+    command: /bin/sh -c "while true; do echo Hello world; sleep 0.5; done"
   ubuntu-hello-frank:
     image: ubuntu
-    command: /bin/sh -c "while true; do echo Hello frank; sleep 1; done"
+    command: /bin/sh -c "while true; do echo Hello frank; sleep 0.5; done"
   ubuntu-hello-josh:
     image: ubuntu
-    command: /bin/sh -c "while true; do echo Hello josh; sleep 1; done"
+    command: /bin/sh -c "while true; do echo Hello josh; sleep 0.5; done"
   ubuntu-hello-stderr:
     image: ubuntu
-    command: /bin/sh -c "while true; do echo error will robinson >&2; sleep 2; done"
+    command: /bin/sh -c "while true; do echo error will robinson >&2; sleep 0.5; done"
 
 clusters:
   container-tests:

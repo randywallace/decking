@@ -6,9 +6,11 @@ module Decking
         Docker::Container.get(name).attach do |stream, chunk|
           case stream
           when :stdout
-            $stdout.puts "(#{name}) #{stream}: #{chunk}"
+            $stdout.puts "(#{name})" + " #{chunk}"
+            $stdout.flush
           when :stderr
-            $stdout.puts "(#{name}) #{stream}: #{chunk}"
+            $stdout.puts "(#{name})".red + " #{chunk}"
+            $stdout.flush
           end
         end
       rescue Docker::Error::NotFoundError
