@@ -1,4 +1,3 @@
-require 'awesome_print'
 require_relative 'spec_helper'
 
 describe Decking::Parser do

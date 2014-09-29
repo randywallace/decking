@@ -1,6 +1,3 @@
-require 'hashie'
-require 'yaml'
-
 module Decking
   module Parser
     # Singleton Method: https://practicingruby.com/articles/ruby-and-the-singleton-pattern-dont-get-along

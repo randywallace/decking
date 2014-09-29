@@ -1,4 +1,3 @@
-
 module Decking
   class Container
 

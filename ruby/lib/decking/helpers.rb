@@ -1,6 +1,3 @@
-require "thread"
-require "ruby-progressbar"
-
 module Decking
   module Helpers
     extend self

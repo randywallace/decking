@@ -1,4 +1,3 @@
-
 module Decking
   class Container
     def delete force = false

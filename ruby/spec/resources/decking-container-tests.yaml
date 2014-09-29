@@ -19,12 +19,17 @@ containers:
   ubuntu-hello-stderr:
     image: ubuntu
     command: /bin/sh -c "while true; do echo error will robinson >&2; sleep 0.5; done"
+  hello-chris:
+    image: ubuntu
+    command: /bin/sh -c "while true; do echo 'Hello Chris!!'; sleep 0.5; done"
+  hello-brandon:
+    image: ubuntu
+    command: /bin/sh -c "while true; do echo 'Hello Brandon!!'; sleep 0.5; done"
 
 clusters:
   container-tests:
-    - ubuntu-hello-world
-    - ubuntu-hello-frank
-    - ubuntu-hello-josh
+    - hello-chris
+    - hello-brandon
     - ubuntu-hello-stderr
 
 groups:
