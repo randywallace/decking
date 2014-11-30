@@ -9,14 +9,14 @@ require 'decking'
 #
 #puts img.inspect
 
-Decking::Parser.config_file 'spec/resources/decking-container-tests.yaml'
+Decking::Parser.config_file '/Users/randy/git/decking/spec/resources/decking-container-tests.yaml'
 Decking::Parser.parse 'container-tests'
 Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
 Decking::Container.delete_all!
 Decking::Container.create_all
 Decking::Container.create_all!
 Decking::Container.start_all
-Decking::Container.attach_all
+Decking::Container.tail_all_logs
 Decking::Container.stop_all
 Decking::Container.stop_all!
 #
@@ -25,17 +25,17 @@ Decking::Container.stop_all!
 #
 #
 ## Garbage
-##container_name="ubuntu-hello-world.container-tests"
-##Decking::Container.map { |name, inst| puts name + ': ' + inst.config.image + ', ' + inst.config.name}
-##puts Decking::Container.count #=> 5
-##puts Decking::Container.all? { |name, inst| inst.config.data == true } #=> true if any of the containers have the data=true
-##puts Decking::Container.group_by{ |name, inst| inst.config.data } #=> Container instances grouped by whether or not data is true or false
-##puts Decking::Container.find_all{ |name, inst| inst.config.data == true } #=> Container instances that have data=true
-##puts Decking::Container[container_name].config.image #=> webapp
-##puts Decking::Container[container_name].volumes_from.inspect #=> ["repo", "config"]
-##puts Decking::Container[container_name].image.inspect #=> webapp
-##puts Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
-##puts Docker.url
-##puts Decking::Container[container_name].config
-##Decking::Container.delete_all
-##puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
+#container_name="ubuntu-hello-world.container-tests"
+#Decking::Container.map { |name, inst| puts name + ': ' + inst.config.image + ', ' + inst.config.name}
+#puts Decking::Container.count #=> 5
+#puts Decking::Container.all? { |name, inst| inst.config.data == true } #=> true if any of the containers have the data=true
+#puts Decking::Container.group_by{ |name, inst| inst.config.data } #=> Container instances grouped by whether or not data is true or false
+#puts Decking::Container.find_all{ |name, inst| inst.config.data == true } #=> Container instances that have data=true
+#puts Decking::Container[container_name].config.image #=> webapp
+#puts Decking::Container[container_name].volumes_from.inspect #=> ["repo", "config"]
+#puts Decking::Container[container_name].image.inspect #=> webapp
+#puts Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
+#puts Docker.url
+#puts Decking::Container[container_name].config
+#Decking::Container.deleteall
+#puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')

@@ -27,6 +27,10 @@ module Decking
         run_with_threads_multiplexed :attach, instances
       end
 
+      def tail_all_logs
+        run_with_threads_multiplexed :tail_logs, instances
+      end
+
       def containers
         @containers ||= Hash.new
       end
