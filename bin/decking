@@ -9,7 +9,7 @@ require 'decking'
 #
 #puts img.inspect
 
-Decking::Parser.config_file '/Users/randy/git/decking/spec/resources/decking-container-tests.yaml'
+Decking::Parser.config_file File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
 Decking::Parser.parse 'container-tests'
 Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
 Decking::Container.delete_all!

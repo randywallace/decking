@@ -1,4 +1,3 @@
-require 'decking/helpers'
 require 'decking/container/create'
 require 'decking/container/start'
 require 'decking/container/delete'
@@ -7,6 +6,7 @@ require 'decking/container/attach'
 
 module Decking
   class Container
+    @@logger = Log4r::Logger.new('decking::container')
     include Decking::Helpers
     class << self
       include Decking::Helpers

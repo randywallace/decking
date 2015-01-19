@@ -6,10 +6,10 @@ module Decking
           Docker::Container.get(name).remove('force' => force)
         rescue Docker::Error::NotFoundError
           clear_progressline
-          puts "Container #{name} does not exist, nothing to delete".yellow
+          @@logger.warn "Container #{name} does not exist, nothing to delete".yellow
         rescue Docker::Error::ServerError => e
           clear_progressline
-          puts e.message.red
+          @@logger.error e.message.red
         end
       end
     end

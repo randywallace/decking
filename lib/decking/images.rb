@@ -1,5 +1,3 @@
-require 'decking/helpers'
-
 module Decking
   class Image
     include Decking::Helpers
