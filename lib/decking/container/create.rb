@@ -30,7 +30,7 @@ module Decking
                                                 'Cmd'          => command.scan(/(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^'" ])+/).map{|val| val.gsub(/^['"]/,"").gsub(/['"]$/,"")},
                                                 'Env'          => env.map { |k, v| "#{k}=#{v}" },
                                                 'ExposedPorts' => exposed_ports
-        rescue Excon::Errors::Conflict
+        rescue Docker::Error::ConflictError
           clear_progressline
           puts "Container #{name} already exists".yellow
           if force
