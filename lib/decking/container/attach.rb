@@ -14,6 +14,8 @@ module Decking
               $stdout.flush
           end
         end
+      rescue Docker::Error::NotFoundError
+        @@logger.error "Container #{name} does not exist"
       end
     end
   end

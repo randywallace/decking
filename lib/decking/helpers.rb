@@ -36,7 +36,7 @@ module Decking
       progress.raise 'Shutdown'
       progress.join
       finished = true
-    rescue Interrupt 
+    rescue Interrupt
       clear_progressline
       puts "I know you did't mean to do that... try again if you really do".yellow
     rescue Exception => e

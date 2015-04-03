@@ -10,13 +10,27 @@ module Decking::CLI
   config_file '.deckingrc'
   program_desc "Manage a cluster of docker containers"
 
-  command :create do |c|
+  flag [:cluster], :default_value => "unknown"
+  switch [:f, :force], :default_value => false
+
+  command :start do |c|
     c.action do |global_options,options,args|
-      puts global_options.inspect,options.inspect,args.inspect
-      cluster_name = args[0]
-      Decking::Parser.parse cluster_name
+      Decking::Parser.parse global_options[:cluster]
       Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
-      Decking::Container.create_all!
+      unless global_options[:force]
+        Decking::Container.create_all
+      else
+        Decking::Container.create_all!
+      end
+      Decking::Container.start_all
+    end
+  end
+
+  command :watchlogs do |c|
+    c.action do |global_options,options,args|
+      Decking::Parser.parse global_options[:cluster]
+      Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
+      Decking::Container.tail_all_logs
     end
   end
 end
