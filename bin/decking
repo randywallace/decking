@@ -1,41 +1,25 @@
 #!/usr/bin/env ruby
+
+require 'gli'
 require 'decking'
-#
-#img = Docker::Image.build_from_tar(Docker::Util.create_dir_tar('.')) do |chunk|
-#  puts JSON.parse(chunk)['stream']
-#end
-#
-#img.tag 'repo' => 'test'
-#
-#puts img.inspect
 
 Decking::Parser.config_file File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
-Decking::Parser.parse 'container-tests'
-Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
-Decking::Container.delete_all!
-Decking::Container.create_all
-Decking::Container.create_all!
-Decking::Container.start_all
-Decking::Container.tail_all_logs
-Decking::Container.stop_all
-Decking::Container.stop_all!
-#
-#
-#
-#
-#
-## Garbage
-#container_name="ubuntu-hello-world.container-tests"
-#Decking::Container.map { |name, inst| puts name + ': ' + inst.config.image + ', ' + inst.config.name}
-#puts Decking::Container.count #=> 5
-#puts Decking::Container.all? { |name, inst| inst.config.data == true } #=> true if any of the containers have the data=true
-#puts Decking::Container.group_by{ |name, inst| inst.config.data } #=> Container instances grouped by whether or not data is true or false
-#puts Decking::Container.find_all{ |name, inst| inst.config.data == true } #=> Container instances that have data=true
-#puts Decking::Container[container_name].config.image #=> webapp
-#puts Decking::Container[container_name].volumes_from.inspect #=> ["repo", "config"]
-#puts Decking::Container[container_name].image.inspect #=> webapp
-#puts Decking::Container[container_name].domainname.inspect #=> qa.randywallace.com
-#puts Docker.url
-#puts Decking::Container[container_name].config
-#Decking::Container.deleteall
-#puts Docker::Container.get(container_name).logs('stdout'=>true, 'stderr'=>true).gsub(/\f/,'')
+
+module Decking::CLI
+  extend GLI::App
+  config_file '.deckingrc'
+  program_desc "Manage a cluster of docker containers"
+
+  command :create do |c|
+    c.action do |global_options,options,args|
+      puts global_options.inspect,options.inspect,args.inspect
+      cluster_name = args[0]
+      Decking::Parser.parse cluster_name
+      Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
+      Decking::Container.create_all!
+    end
+  end
+end
+
+exit Decking::CLI.run(ARGV)
+
