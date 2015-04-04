@@ -1,5 +1,6 @@
 require 'hashie'
 require 'docker'
+Docker.validate_version!
 require "ruby-progressbar"
 require 'thread'
 require 'yaml'

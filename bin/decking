@@ -4,6 +4,7 @@ require 'gli'
 require 'decking'
 
 module Decking::CLI
+  @@logger = Log4r::Logger.new('decking::cli')
   extend GLI::App
   config_file '.deckingrc'
   sort_help :manually
@@ -26,8 +27,9 @@ module Decking::CLI
   end
 
   desc 'Create and start the cluster'
-  command :start do |c|
+  command :run do |c|
     c.action do |global_options,options,args|
+      @@logger.info "Running cluster #{global_options[:cluster]}"
       unless global_options[:force]
         Decking::Container.create_all
       else
@@ -50,4 +52,3 @@ module Decking::CLI
 end
 
 exit Decking::CLI.run(ARGV)
-
