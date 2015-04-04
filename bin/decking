@@ -3,20 +3,31 @@
 require 'gli'
 require 'decking'
 
-Decking::Parser.config_file File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
-
 module Decking::CLI
   extend GLI::App
   config_file '.deckingrc'
+  sort_help :manually
   program_desc "Manage a cluster of docker containers"
+  version Decking::VERSION
 
+  desc 'Path to decking.yaml'
+  flag [:config_file, :configfile], :default_value => File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
+
+  desc 'The name of the cluster to use for all commands'
   flag [:cluster], :default_value => "unknown"
+
+  desc 'Force the command in a destructive manner'
   switch [:f, :force], :default_value => false
 
+  pre do |global_options,options,args|
+    Decking::Parser.config_file global_options[:config_file]
+    Decking::Parser.parse global_options[:cluster]
+    Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
+  end
+
+  desc 'Create and start the cluster'
   command :start do |c|
     c.action do |global_options,options,args|
-      Decking::Parser.parse global_options[:cluster]
-      Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
       unless global_options[:force]
         Decking::Container.create_all
       else
@@ -26,13 +37,16 @@ module Decking::CLI
     end
   end
 
-  command :watchlogs do |c|
+  desc 'Show the cluster logs'
+  command [:logs,:attach] do |c|
+    c.switch [:t,:timestamps], :default_value => false, :desc => 'Show Timestamps'
+    c.switch [:f,:follow], :default_value => false, :desc => 'Tail the logs'
+    c.flag [:n,:lines], :default_value => 100, :desc => 'Number of lines to print'
     c.action do |global_options,options,args|
-      Decking::Parser.parse global_options[:cluster]
-      Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
-      Decking::Container.tail_all_logs
+      Decking::Container.tail_all_logs options[:timestamps], options[:lines], options[:follow]
     end
   end
+
 end
 
 exit Decking::CLI.run(ARGV)

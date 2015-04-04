@@ -61,12 +61,12 @@ module Decking
       end
     end
 
-    def run_with_threads_multiplexed method, containers
+    def run_with_threads_multiplexed method, containers, *args
       clear_progressline
       threads = Array.new 
       containers.map do |name, container|
         threads << Thread.new do
-          container.method(method).call
+          container.method(method).call(*args)
           sleep 0.1
         end
       end

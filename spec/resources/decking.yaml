@@ -13,7 +13,7 @@ containers:
   ubuntu:
     port:
       - 82:80
-    command: ['/bin/sh', '-c', 'while true; do echo Hello world; sleep 1; done']
+    command: "/bin/sh -c 'while true; do echo Hello world; sleep 1; done'"
   blank_container_image:
   repos:
     image: repos
@@ -95,6 +95,10 @@ groups:
         env:
           WEBAPP: replace
   container-tests:
+    options:
+      env:
+        ENVIRONMENT: qa-admin
+        TAG: v1.0.0
 
 global:
   env:
