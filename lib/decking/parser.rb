@@ -131,7 +131,7 @@ module Decking
           c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].containers[k])
         end
         c.containers[k].name = k + '.' + cluster
-        c.containers[k].domainname = cluster + '.' + config.global.domainname if config.global.key? 'domainname'
+        c.containers[k].domainname = cluster + '.' + config.global.domainname if config.key?('global') && config.global.key?('domainname')
       end
       images = self.config.images
       group  = self.config.clusters[cluster].group
