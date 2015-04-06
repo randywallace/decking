@@ -15,10 +15,10 @@ module Decking
               port_bindings[vars[0]]  = [ { 'HostPort' => vars[0] } ]
             end
           end
-          @container.start! 'Links'        => links,
-                            'Binds'        => binds, 
-                            'LxcConf'      => lxc_conf,
-                            'PortBindings' => port_bindings
+          Docker::Container.get(name).start! 'Links' => links,
+                                             'Binds'        => binds,
+                                             'LxcConf'      => lxc_conf,
+                                             'PortBindings' => port_bindings
         rescue Docker::Error::NotFoundError
           clear_progressline
           puts "Container #{name} not found".red

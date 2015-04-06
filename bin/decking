@@ -6,31 +6,31 @@ require 'decking'
 module Decking::CLI
   @@logger = Log4r::Logger.new('decking::cli')
   extend GLI::App
-  config_file '.deckingrc'
   sort_help :manually
+  subcommand_option_handling :normal
+  config_file '.deckingrc'
   program_desc "Manage a cluster of docker containers"
-  version Decking::VERSION
+  version "Decking: #{Decking::VERSION}\n    Docker:  #{Docker.version["Version"]}"
 
   desc 'Path to decking.yaml'
-  flag [:config_file, :configfile], :default_value => File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
+  flag [:config], :default_value => File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
 
   desc 'The name of the cluster to use for all commands'
   flag [:cluster], :default_value => "unknown"
 
-  desc 'Force the command in a destructive manner'
-  switch [:f, :force], :default_value => false
 
   pre do |global_options,options,args|
-    Decking::Parser.config_file global_options[:config_file]
+    Decking::Parser.config_file global_options[:config]
     Decking::Parser.parse global_options[:cluster]
     Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
   end
 
   desc 'Create and start the cluster'
   command :run do |c|
+    c.switch [:f, :force], :default_value => false, :desc => 'Force the command in a destructive manner'
     c.action do |global_options,options,args|
       @@logger.info "Running cluster #{global_options[:cluster]}"
-      unless global_options[:force]
+      unless options[:force]
         Decking::Container.create_all
       else
         Decking::Container.create_all!
@@ -47,6 +47,53 @@ module Decking::CLI
     c.action do |global_options,options,args|
       Decking::Container.tail_all_logs options[:timestamps], options[:lines], options[:follow]
     end
+  end
+
+  desc 'Completely remove the cluster containers'
+  command [:rm] do |c|
+    c.switch [:f, :force], :default_value => false, :desc => 'Force the Delete'
+    c.action do |global_options,options,args|
+      unless options[:force]
+        Decking::Container.delete_all
+      else
+        Decking::Container.delete_all!
+      end
+    end
+  end
+
+  desc 'Stop the cluster'
+  command [:stop] do |c|
+    c.switch [:f, :force], :default_value => false, :desc => 'Force Stop the cluster'
+    c.action do |global_options,options,args|
+      unless options[:force]
+        Decking::Container.stop_all
+      else
+        Decking::Container.stop_all!
+      end
+    end
+  end
+
+  desc 'Start the cluster'
+  command [:start] do |c|
+    c.action do |global_options,options,args|
+      Decking::Container.start_all
+    end
+  end
+
+  desc 'Only create the cluster'
+  command [:create] do |c|
+    c.switch [:f, :force], :default_value => false, :desc => 'Force create the cluster by removing any existing duplicates'
+    c.action do |global_options,options,args|
+      unless options[:force]
+        Decking::Container.create_all
+      else
+        Decking::Container.create_all!
+      end
+    end
+  end
+
+  desc 'Build Container(s)'
+  command [:build] do |c|
   end
 
 end
