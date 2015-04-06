@@ -15,7 +15,7 @@ module Decking
     end
 
     def print
-      puts config
+      puts config.to_yaml
     end
 
     def parse cluster

@@ -12,13 +12,14 @@ require 'decking'
 Decking::Parser.config_file File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
 Decking::Parser.parse 'container-tests'
 Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
-Decking::Container.delete_all!
-Decking::Container.create_all
-Decking::Container.create_all!
-Decking::Container.start_all
-Decking::Container.tail_all_logs
-Decking::Container.stop_all
-Decking::Container.stop_all!
+Decking::Parser.print
+#Decking::Container.delete_all!
+#Decking::Container.create_all
+#Decking::Container.create_all!
+#Decking::Container.start_all
+#Decking::Container.tail_all_logs
+#Decking::Container.stop_all
+#Decking::Container.stop_all!
 #
 #
 #

@@ -92,6 +92,13 @@ module Decking::CLI
     end
   end
 
+  desc 'Print to STDOUT the compiled cluster configuration'
+  command [:printcluster] do |c|
+    c.action do |global_options,options,args|
+      Decking::Parser.print
+    end
+  end
+
   desc 'Build Container(s)'
   command [:build] do |c|
   end

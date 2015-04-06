@@ -40,6 +40,10 @@ groups:
         OPTIONS_ENV_OVERRIDE: 'this will not be the value'
         GLOBAL_OVERRIDE_AWS_REGION: 'us-east-1'
     containers:
+      hello-brandon:
+        memory: 512
+        env:
+          OPTIONS_ENV_OVERRIDE: 'this is the real value'
       ubuntu:
         port:
           - 83:81
