@@ -1,18 +1,23 @@
 #!/usr/bin/env ruby
 require 'decking'
-#
-#img = Docker::Image.build_from_tar(Docker::Util.create_dir_tar('.')) do |chunk|
-#  puts JSON.parse(chunk)['stream']
-#end
-#
-#img.tag 'repo' => 'test'
-#
-#puts img.inspect
 
-Decking::Parser.config_file File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
-Decking::Parser.parse 'container-tests'
-Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
-Decking::Parser.print
+puts FileUtils.pwd
+
+img = nil
+FileUtils.cd(File.expand_path('~/git/decking/docker-eds-tests')) do
+  img = Docker::Image.build_from_tar(Docker::Util.create_dir_tar('.'), 'dockerfile' => 'eds-webapp/Dockerfile') do |chunk|
+    puts JSON.parse(chunk)['stream']
+  end
+end
+
+img.tag 'repo' => 'test', 'tag' => 'test', 'force' => true
+
+puts img.inspect
+
+#Decking::Parser.config_file File.expand_path(File.dirname(__FILE__)) + '/../spec/resources/decking-container-tests.yaml'
+#Decking::Parser.parse 'container-tests'
+#Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
+#Decking::Parser.print
 #Decking::Container.delete_all!
 #Decking::Container.create_all
 #Decking::Container.create_all!

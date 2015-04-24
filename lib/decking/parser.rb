@@ -3,12 +3,13 @@ module Decking
     # Singleton Method: https://practicingruby.com/articles/ruby-and-the-singleton-pattern-dont-get-along
     extend self
 
-    attr_accessor :config
+    attr_accessor :config, :config_path
 
     def config_file config_file
       config_file ||= 'decking.yaml'
 
       @config = Hashie::Mash.new(YAML.load_file(config_file))
+      @config_path = File.realpath(config_file)
 
       confirm_requirements
 
@@ -37,7 +38,13 @@ module Decking
 
     def parse_images
       config.images.each do |key, val|
-        config.images[key] = key unless @config.images[key]
+        if val.nil?
+          config.images[key]        = Hashie::Mash.new
+          config.images[key].remote = key
+        end
+        config.images[key].remote     ||= nil
+        config.images[key].base       ||= nil
+        config.images[key].dockerfile ||= "Dockerfile"
       end
     end
 
