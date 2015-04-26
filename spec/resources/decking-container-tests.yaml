@@ -4,8 +4,7 @@
 images:
   ubuntu:
   eds-webapp:
-    base: ~/git/decking/docker-eds-tests
-    dockerfile: eds-webapp/Dockerfile
+    name: test
 
 containers:
   ubuntu-hello-world:

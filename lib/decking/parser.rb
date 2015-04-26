@@ -35,16 +35,16 @@ module Decking
       raise "No Images Defined"     unless config.images?
     end
 
-
     def parse_images
       config.images.each do |key, val|
         if val.nil?
-          config.images[key]        = Hashie::Mash.new
-          config.images[key].remote = key
+          config.images[key] = Hashie::Mash.new
+          config.images[key].name = "#{key}:latest"
+        elsif val.is_a?(String)
+          config.images[key] = Hashie::Mash.new
+          config.images[key].name = val
         end
-        config.images[key].remote     ||= nil
-        config.images[key].base       ||= nil
-        config.images[key].dockerfile ||= "Dockerfile"
+        config.images[key].tag ||= "latest"
       end
     end
 

@@ -20,8 +20,6 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
-
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/decking/fork )

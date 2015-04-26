@@ -7,7 +7,10 @@ describe Decking::Parser do
 
     it 'sets image value to key when blank' do
       Decking::Parser.parse 'qa'
-      expect(Decking::Parser.config.images.blank).to eq("blank")
+      expect(Decking::Parser.config.images.blank.name).to eq("blank:latest")
+      expect(Decking::Parser.config.images.base.name).to eq("fail")
+      expect(Decking::Parser.config.images.repos.name).to eq("repos:v1.02")
+      expect(Decking::Parser.config.images["eds-webapp"].name).to eq("eds-webapp:latest")
     end
 
     it 'sets image key in containers to container name when missing' do

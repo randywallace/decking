@@ -2,11 +2,13 @@
 ---
 
 images:
-  base:      base
-  config:    config
-  repos:     repos
-  webapp:    webapp
-  elasticsearch: elasticsearch
+  base: fail
+  config:
+  repos:
+    name: repos:v1.02
+  eds-webapp:
+  elasticsearch:
+    tag: 1.5.0
   blank:
 
 containers:
