@@ -41,7 +41,7 @@ module Decking
           end
         rescue Docker::Error::NotFoundError
           clear_progressline
-          puts "Container #{name} not found".yellow
+          puts "Image #{image} not found".yellow
           exit
         rescue Docker::Error::ServerError => e
           clear_progressline

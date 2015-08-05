@@ -20,6 +20,7 @@ module Decking::CLI
 
 
   pre do |global_options,options,args|
+    @@logger.debug "Using #{global_options[:config]} for decking config"
     Decking::Parser.config_file global_options[:config]
     Decking::Parser.parse global_options[:cluster]
     Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
