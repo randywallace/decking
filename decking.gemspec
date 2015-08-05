@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "hashie"
   spec.add_dependency "ruby-progressbar"
-  spec.add_dependency "docker-api", "~> 1.20.0"
+  spec.add_dependency "docker-api", "~> 1.22.2"
   spec.add_dependency "log4r"
   spec.add_dependency "io-console"
   spec.add_dependency "gli"
