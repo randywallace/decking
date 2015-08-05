@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decking (0.0.1)
+    decking (0.0.2)
       docker-api (~> 1.22.2)
       gli
       hashie
