@@ -97,7 +97,6 @@ module Decking
         if (!config.clusters[key].key? 'group') && (config.groups.key? key)
           config.clusters[key].group = key
         end
-      
         raise "Cluster '" + key + "' is empty" unless config.clusters[key].key? "containers"
         raise "Cluster '" + key + "' containers should be an Array" unless config.clusters[key].containers.instance_of? Array
       end
@@ -105,7 +104,6 @@ module Decking
 
     def parse_groups
       config.groups.each do |key, val|
-        config.groups[key]            = Hashie::Mash.new if config.groups[key].nil?
         config.groups[key].options    = Hashie::Mash.new unless config.groups[key].key? 'options'
         config.groups[key].containers = Hashie::Mash.new unless config.groups[key].key? 'containers'
         config.groups[key].containers.each do |c_key, c_val|
@@ -132,10 +130,12 @@ module Decking
         # Merge Global Overrides
         c.containers[k] = c.containers[k].deep_merge(config.global) if config.key? 'global'
         # Merge Group Overrides
-        c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].options)
-        # Merge Group Container Overrides
-        if config.groups[config.clusters[cluster].group].containers.key? k
-          c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].containers[k])
+        unless config.clusters[cluster].group.nil?
+          c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].options)
+          # Merge Group Container Overrides
+          if config.groups[config.clusters[cluster].group].containers.key? k
+            c.containers[k] = c.containers[k].deep_merge(config.groups[config.clusters[cluster].group].containers[k])
+          end
         end
         c.containers[k].name = k + '.' + cluster
         c.containers[k].env.CONTAINER_NAME = k + '.' + cluster

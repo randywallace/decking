@@ -6,6 +6,16 @@ require 'decking'
 module Decking::CLI
   @@logger = Log4r::Logger.new('decking::cli')
   extend GLI::App
+
+  accept(Hash) do |value|
+    result = {}
+    value.split(/,/).each do |pair|
+      k,v = pair.split(/=/)
+      result[k] = v
+    end
+    result
+  end
+
   sort_help :manually
   subcommand_option_handling :normal
   config_file '.deckingrc'
@@ -18,11 +28,18 @@ module Decking::CLI
   desc 'The name of the cluster to use for all commands'
   flag [:cluster], :default_value => "unknown"
 
+  desc 'Add or override environment variables on all containers in cluster'
+  flag   [:e, :env], :type => Hash, :default_value => {}
 
   pre do |global_options,options,args|
     @@logger.debug "Using #{global_options[:config]} for decking config"
     Decking::Parser.config_file global_options[:config]
     Decking::Parser.parse global_options[:cluster]
+    if !global_options[:env].nil?
+      Decking::Parser.config.containers.each_key do |container|
+        global_options[:env].each{|k, v| Decking::Parser.config.containers[container].env[k] = v}
+      end
+    end
     Decking::Parser.config.containers.map { |name, config| Decking::Container.add config }
   end
 

@@ -29,6 +29,8 @@ containers:
     command: /bin/sh -c "while true; do echo 'Hello Brandon!!'; sleep 0.5; done"
 
 clusters:
+  test-no-group:
+    - hello-chris
   container-tests:
     - hello-chris
     - hello-brandon
