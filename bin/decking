@@ -18,7 +18,13 @@ module Decking::CLI
 
   sort_help :manually
   subcommand_option_handling :normal
-  config_file '.deckingrc'
+
+  if File.file? Dir.pwd + '.deckingrc'
+    config_file Dir.pwd + '.deckingrc'
+  else
+    config_file '.deckingrc'
+  end
+
   program_desc "Manage a cluster of docker containers"
   version "Decking: #{Decking::VERSION}\n    Docker:  #{Docker.version["Version"]}"
 
