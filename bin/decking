@@ -19,8 +19,8 @@ module Decking::CLI
   sort_help :manually
   subcommand_option_handling :normal
 
-  if File.file? Dir.pwd + '.deckingrc'
-    config_file Dir.pwd + '.deckingrc'
+  if File.file? Dir.pwd + '/.deckingrc'
+    config_file Dir.pwd + '/.deckingrc'
   else
     config_file '.deckingrc'
   end
