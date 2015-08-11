@@ -1,13 +1,13 @@
 PATH
   remote: .
   specs:
-    decking (0.0.6)
+    decking (0.0.7)
       docker-api (~> 1.22.2)
-      gli
-      hashie
+      gli (~> 2.13.1)
+      hashie (~> 3.4.2)
       io-console
-      log4r
-      ruby-progressbar
+      log4r (~> 1.1.10)
+      ruby-progressbar (~> 1.7.5)
 
 GEM
   remote: https://rubygems.org/

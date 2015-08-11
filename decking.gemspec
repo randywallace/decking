@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["randy@randywallace.com"]
   spec.summary       = %q{Decking is a rewrite of the node tool also called decking which provides docker orchestration}
   spec.description   = %q{Decking is a rewrite of the node tool also called decking which provides docker orchestration}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/randywallace/decking/tree/ruby"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
@@ -18,12 +18,12 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "hashie"
-  spec.add_dependency "ruby-progressbar"
+  spec.add_dependency "hashie", "~> 3.4.2"
+  spec.add_dependency "ruby-progressbar", "~> 1.7.5"
   spec.add_dependency "docker-api", "~> 1.22.2"
-  spec.add_dependency "log4r"
+  spec.add_dependency "log4r", "~> 1.1.10"
   spec.add_dependency "io-console"
-  spec.add_dependency "gli"
+  spec.add_dependency "gli", "~> 2.13.1"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
