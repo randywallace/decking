@@ -37,7 +37,7 @@ module Decking::CLI
   flag [:cluster], :default_value => "unknown"
 
   desc 'Add or override environment variables on all containers in cluster'
-  flag   [:e, :env], :type => Hash, :default_value => {}
+  flag [:env], :type => Hash, :default_value => {}
 
   pre do |global_options,options,args|
     @@logger.debug "Using #{global_options[:config]} for decking config"

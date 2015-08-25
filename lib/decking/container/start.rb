@@ -15,7 +15,15 @@ module Decking
               port_bindings[vars[0]]  = [ { 'HostPort' => vars[0] } ]
             end
           end
-          Docker::Container.get(name).start! 'Links'        => links,
+
+          start_links = Array.new
+          if links.is_a? Array
+            links.each do |val|
+              start_links << val.dep + ':' + val.alias
+            end
+          end
+
+          Docker::Container.get(name).start! 'Links'        => start_links,
                                              'Binds'        => binds,
                                              'LxcConf'      => lxc_conf,
                                              'PortBindings' => port_bindings
