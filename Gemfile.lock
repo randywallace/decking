@@ -35,7 +35,7 @@ GEM
     hashie (3.4.2)
     hitimes (1.2.2)
     io-console (0.4.2)
-    json (1.8.3)
+    json (2.3.1)
     listen (2.8.2)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
