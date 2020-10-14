@@ -19,7 +19,7 @@ GEM
     docker-api (1.22.2)
       excon (>= 0.38.0)
       json
-    excon (0.45.4)
+    excon (0.76.0)
     ffi (1.9.6)
     formatador (0.2.5)
     gli (2.13.1)
